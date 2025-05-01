@@ -1,0 +1,10 @@
+# .gitignore
+laravel-app/vendor/
+laravel-app/node_modules/
+laravel-app/storage/
+laravel-app/bootstrap/cache/
+rails-app/tmp/
+rails-app/log/
+rails-app/vendor/
+mysql_data/
+.env
