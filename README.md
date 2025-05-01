@@ -140,14 +140,58 @@ docker compose down -v
 
 ---
 
-## 🤝 開発チーム向けに
 
-このテンプレートは「誰でも簡単に開発環境を再現できる」ことを目的に作成されています。  
-何か不明点があれば、`README.md` の更新リクエストや `Issues` にてご連絡ください。
 
-```
+## ✅ MySQLクライアントでDB接続・確認する手順（README追記用）
+
+### 🔍 MySQL クライアントツールでの接続手順
+
+このプロジェクトでは、Docker上に共通のMySQLサーバーを構築しています。  
+`appuser` でログインすることで、Laravel / Rails / Node.js / Java / Python 各アプリ用のデータベースにアクセスできます。
+
+#### 推奨ツール例（どれでもOK）：
+- [HeidiSQL（Windows）](https://www.heidisql.com/)
+- [DBeaver（マルチOS）](https://dbeaver.io/)
+- [TablePlus（macに人気）](https://tableplus.com/)
 
 ---
 
-これを `README.md` に保存すれば、相棒さん含め誰でも迷わず立ち上げられます。  
-必要なら「GitHubへの初回Push手順」や「セットアップ済zip配布」も追加可能です。どうしますか？
+### 🔧 接続情報（docker-compose準拠）
+
+| 項目         | 値              |
+|--------------|-----------------|
+| ホスト名     | `127.0.0.1` または `localhost` |
+| ポート       | `3306`          |
+| ユーザー名   | `appuser`       |
+| パスワード   | `secret`        |
+| 使用DB名     | 任意（例：`laravel_db`）または空欄でもOK |
+
+> Dockerが起動している状態であれば、上記情報でMySQLに接続できます。
+
+---
+
+### 📋 確認できるデータベース一覧（初期状態）
+
+以下のデータベースが自動作成されています：
+
+- `laravel_db`
+- `rails_db`
+- `node_db`
+- `java_db`
+- `python_db`
+
+> これらは `/mysql/init.sql` により `docker-compose up` 時に初期作成されます。
+
+---
+
+### ✅ トラブルシューティング
+
+- **接続できない場合**：
+  - Dockerが起動していない → `docker ps` で確認
+  - 他のMySQLがポート3306を使っている → `docker-compose.yml` でポート変更可
+  - ボリューム初期化が必要な場合 → `docker volume rm <volume名>` → 再起動
+
+---
+
+必要であればこのまま `README.md` にコピペでOKです。  
+もっと短く or コマンドベースでまとめたい場合もアレンジできますよ！どうしますか？
