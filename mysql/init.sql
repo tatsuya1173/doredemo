@@ -1,0 +1,13 @@
+CREATE DATABASE IF NOT EXISTS laravel_db;
+CREATE DATABASE IF NOT EXISTS rails_db;
+CREATE DATABASE IF NOT EXISTS node_db;
+CREATE DATABASE IF NOT EXISTS java_db;
+CREATE DATABASE IF NOT EXISTS python_db;
+
+CREATE USER IF NOT EXISTS 'appuser'@'%' IDENTIFIED BY 'secret';
+GRANT ALL PRIVILEGES ON laravel_db.* TO 'appuser'@'%';
+GRANT ALL PRIVILEGES ON rails_db.* TO 'appuser'@'%';
+GRANT ALL PRIVILEGES ON node_db.* TO 'appuser'@'%';
+GRANT ALL PRIVILEGES ON java_db.* TO 'appuser'@'%';
+GRANT ALL PRIVILEGES ON python_db.* TO 'appuser'@'%';
+FLUSH PRIVILEGES;

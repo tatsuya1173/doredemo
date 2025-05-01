@@ -19,15 +19,21 @@ services:
       - ./laravel-app:/var/www/html
     expose:
       - 80
-    command: >
-      bash -c "chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache &&
-              chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache &&
-              apache2-foreground"
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: laravel_db
+      DB_USERNAME: appuser
+      DB_PASSWORD: secret
 
   rails:
     build: ./rails-app
     expose:
       - 3000
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_NAME: rails_db
+      DATABASE_USER: appuser
+      DATABASE_PASSWORD: secret
     depends_on:
       - mysql
 
@@ -35,32 +41,43 @@ services:
     build: ./node-app
     expose:
       - 3001
+    environment:
+      DB_HOST: mysql
+      DB_NAME: node_db
+      DB_USER: appuser
+      DB_PASS: secret
 
   java:
     build: ./java-app
-    dns:
-      - 8.8.8.8
     expose:
       - 8080
+    environment:
+      DB_HOST: mysql
+      DB_NAME: java_db
+      DB_USER: appuser
+      DB_PASS: secret
 
   python:
     build: ./python-app
     expose:
       - 5000
-      
+    environment:
+      DB_HOST: mysql
+      DB_NAME: python_db
+      DB_USER: appuser
+      DB_PASS: secret
+
   mysql:
     image: mysql:8.0
     container_name: shared-mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: app
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: secret
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   mysql_data:
