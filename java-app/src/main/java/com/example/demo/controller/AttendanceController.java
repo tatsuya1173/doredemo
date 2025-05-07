@@ -103,11 +103,19 @@ public class AttendanceController {
     public String dashboard(@RequestParam(required = false) String month, Model model) {
         User user = getCurrentUser();
 
-        // 表示対象の年月（未指定なら今月）
-        YearMonth targetMonth = (month != null) ? YearMonth.parse(month) : YearMonth.now();
+        // 月指定がなければ今月を対象にする
+        YearMonth targetMonth;
+        try {
+            targetMonth = (month != null) ? YearMonth.parse(month) : YearMonth.now();
+        } catch (Exception e) {
+            targetMonth = YearMonth.now(); // パース失敗時のフォールバック
+        }
+
+        LocalDate start = targetMonth.atDay(1);
+        LocalDate end = targetMonth.atEndOfMonth();
 
         // 今は月指定の絞り込みは使ってない（将来的に使うならstart〜endでfilter）
-        List<Attendance> attendances = attendanceRepository.findAllByUser(user);
+        List<Attendance> attendances = attendanceRepository.findAllByUserAndDateBetween(user, start, end);
 
         long workingDays = 0;                  // 出勤日数
         Duration totalDuration = Duration.ZERO; // 総労働時間
