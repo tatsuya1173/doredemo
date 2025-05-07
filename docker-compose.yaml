@@ -48,14 +48,28 @@ services:
   #     DB_PASS: secret
 
   java:
-    build: ./java-app
+    build:
+      context: ./java-app
+      dockerfile: Dockerfile.dev
+    # volumes:
+    #   - ./java-app:/app
+    #   - ~/.m2:/root/.m2
+    volumes:
+      - ./java-app/src:/app/src
+      - ./java-app/pom.xml:/app/pom.xml
+      - ./java-app/.mvn:/app/.mvn
+      - ./java-app/mvnw:/app/mvnw
+      - ~/.m2:/root/.m2
+      - ./java-app/src/main/resources/templates:/app/src/main/resources/templates
     expose:
       - 8080
     environment:
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
       DB_HOST: mysql
       DB_NAME: java_db
       DB_USER: appuser
       DB_PASS: secret
+
 
   # python:
   #   build: ./python-app
