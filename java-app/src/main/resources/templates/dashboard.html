@@ -1,0 +1,127 @@
+<style>
+    body {
+        font-family: "Helvetica Neue", sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 40px;
+    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+    }
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .btn-group {
+        margin-bottom: 20px;
+    }
+    .btn {
+        padding: 10px 18px;
+        margin-right: 8px;
+        font-size: 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #fff;
+        background-color: #007bff;
+        transition: 0.2s;
+    }
+    .btn:hover {
+        opacity: 0.9;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #fff;
+    }
+    th, td {
+        border-bottom: 1px solid #e0e0e0;
+        text-align: center;
+        padding: 12px;
+    }
+    th {
+        background-color: #f0f4f8;
+        font-weight: 600;
+        color: #333;
+    }
+    .stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 16px;
+        font-size: 15px;
+    }
+    .month-form {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="container">
+    <h1>出勤管理ダッシュボード</h1>
+
+    <div class="btn-group">
+        <form method="POST" th:action="@{/java/attendance/checkin}" style="display: inline;">
+            <button type="submit" class="btn">出勤</button>
+        </form>
+        <form method="POST" th:action="@{/java/attendance/checkout}" style="display: inline;">
+            <button type="submit" class="btn btn-secondary">退勤</button>
+        </form>
+        <form method="POST" th:action="@{/java/attendance/break-start}" style="display: inline;">
+            <button type="submit" class="btn btn-secondary">休憩開始</button>
+        </form>
+        <form method="POST" th:action="@{/java/attendance/break-end}" style="display: inline;">
+            <button type="submit" class="btn btn-secondary">休憩終了</button>
+        </form>
+    </div>
+
+    <form method="get" action="/java/dashboard" class="month-form">
+        <label>対象月：</label>
+        <input type="month" name="month" th:value="${month}" />
+        <button type="submit" class="btn btn-secondary">表示</button>
+    </form>
+
+    <div class="stats">
+        <div>出勤日数: <strong th:text="${workingDays}">0</strong> 日</div>
+        <div>総労働時間: <strong th:text="${totalWorkingTime}">0時間0分</strong></div>
+    </div>
+
+    <h2 style="margin-top: 30px;">勤怠履歴</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>日付</th>
+                <th>出勤時刻</th>
+                <th>休憩開始</th>
+                <th>休憩終了</th>
+                <th>退勤時刻</th>
+                <th>実労働時間</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="att : ${attendances}">
+                <td th:text="${att.date}"></td>
+                <td th:text="${#temporals.format(att.checkinTime, 'HH:mm:ss')}"></td>
+                <td th:text="${#temporals.format(att.breakStartTime, 'HH:mm:ss')}"></td>
+                <td th:text="${#temporals.format(att.breakEndTime, 'HH:mm:ss')}"></td>
+                <td th:text="${#temporals.format(att.checkoutTime, 'HH:mm:ss')}"></td>
+                <td th:text="${att['workingDuration']}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
